@@ -104,11 +104,53 @@ const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>
 
 const BAR_WIDTH = 24;
 
+// ── i18n ──────────────────────────────────────────────────────────────────────
+
+const LANG = {
+  en: {
+    op_scan:   'REMEMBRANCE',  op_miss:  '—',
+    op_found:  'FOUND',        op_arch:  'ARCHIVING',
+    op_saved:  'SAVED',        op_lost:  'LOST',   op_part: 'PARTIAL',
+    scan:      id          => `${id} — trying to recall memory`,
+    miss:      id          => `${id} — nothing to recall`,
+    found:     (t, src, c) => `${t} / ${src} — confidence: ${c}`,
+    saved:     (id, sz)    => `${id} — ${sz} written to corpus`,
+    lost:      (id, r)     => `${id} — ${r}`,
+    part:      (id, p, sz) => `${id} — ${p} of ${sz} recovered`,
+    lost_msgs: ['entropy threshold exceeded', 'slipped away', 'faded away'],
+    write_err: 'write error',
+    types:     { personal_memory: 'personal memory', internet_artifact: 'internet artifact', cultural_artifact: 'cultural artifact', data_fragment: 'data fragment' },
+    s_arch:    'archived',   s_lost:    'lost',      s_part:  'partial',
+    s_miss:    'not detected',
+    s_entr:    'entropy',    s_up:      'uptime',    s_since: 'since',
+  },
+  hu: {
+    op_scan:   'EMLÉKEZÉS',    op_miss:  '—',
+    op_found:  'AZONOSÍTVA',   op_arch:  'ARCHIVÁLÁS',
+    op_saved:  'MENTVE',       op_lost:  'ELVESZETT', op_part: 'RÉSZLEGES',
+    scan:      id          => `${id} — próbál emlékezni`,
+    miss:      id          => `${id} — nem található emlék`,
+    found:     (t, src, c) => `${t} / ${src} — bizonyosság: ${c}`,
+    saved:     (id, sz)    => `${id} — ${sz} kiírva`,
+    lost:      (id, r)     => `${id} — ${r}`,
+    part:      (id, p, sz) => `${id} — ${p} helyreállítva / ${sz}`,
+    lost_msgs: ['entrópia-küszöb túllépve', 'elillant', 'elhalványult'],
+    write_err: 'írási hiba',
+    types:     { personal_memory: 'személyes emlék', internet_artifact: 'online tartalom', cultural_artifact: 'kulturális tartalom', data_fragment: 'adattöredék' },
+    s_arch:    'archivált',  s_lost:    'elveszett', s_part:  'részleges',
+    s_miss:    'nem található',
+    s_entr:    'entrópia',   s_up:      'futásidő',  s_since: 'óta',
+  },
+};
+
+let lang = 'en';
+const L = () => LANG[lang];
+
 function makeBar(pct, failed) {
   const filled = Math.round(pct / 100 * BAR_WIDTH);
   const bar = '▓'.repeat(filled) + '░'.repeat(BAR_WIDTH - filled);
   const pctStr = String(Math.round(pct)).padStart(3) + '%';
-  return `[${bar}]  ${pctStr}${failed ? '  write error' : ''}`;
+  return `[${bar}]  ${pctStr}${failed ? '  ' + L().write_err : ''}`;
 }
 
 // ── DOM helpers ───────────────────────────────────────────────────────────────
@@ -201,15 +243,15 @@ function logStats() {
   addGap();
   addStatSep(top);
   addStat(emp);
-  addStat(row('archived',     nSaved,           pct(nSaved)));
-  addStat(row('lost',         nLost,            pct(nLost)));
-  addStat(row('partial',      nPartial,         pct(nPartial)));
-  addStat(row('not detected', nMissed));
+  addStat(row(L().s_arch, nSaved,           pct(nSaved)));
+  addStat(row(L().s_lost, nLost,            pct(nLost)));
+  addStat(row(L().s_part, nPartial,         pct(nPartial)));
+  addStat(row(L().s_miss, nMissed));
   addStat(emp);
   addStatSep(div);
   addStat(emp);
-  addStat(row('entropy',      entropy.toFixed(3)));
-  addStat(row('uptime',       uptime,           `since   ${since}`));
+  addStat(row(L().s_entr, entropy.toFixed(3)));
+  addStat(row(L().s_up,   uptime,           `${L().s_since}   ${since}`));
   addStat(emp);
   addStatSep(bot);
   addGap();
@@ -231,12 +273,12 @@ function cycle() {
   const roll    = Math.random();
   const outcome = roll < 0.80 ? 'saved' : roll < 0.93 ? 'lost' : 'partial';
 
-  addLine(ts(), 'REMEMBRANCE', `${id} — trying to recall memory`, 'scan');
+  addLine(ts(), L().op_scan, L().scan(id), 'scan');
 
   setTimeout(() => {
 
     if (Math.random() < 0.08) {
-      addLine(ts(), '—', `${id} — nothing to recall`, 'muted');
+      addLine(ts(), L().op_miss, L().miss(id), 'muted');
       nMissed++;
       cycleCount++;
       if (cycleCount % 50 === 0) logStats();
@@ -244,13 +286,13 @@ function cycle() {
       return setTimeout(cycle, ri(2000, 5000));
     }
 
-    addLine(ts(), 'FOUND', `${frag.type.replace(/_/g, ' ')} / ${frag.source} — confidence: ${conf.toFixed(2)}`, 'det');
+    addLine(ts(), L().op_found, L().found(L().types[frag.type], frag.source, conf.toFixed(2)), 'det');
     addContentLine(typeof frag.text === 'function' ? frag.text() : frag.text);
 
     setTimeout(() => {
       const d   = new Date();
       const path = `/corpus/${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())}/${id}`;
-      addLine(ts(), 'ARCHIVING', `${id} → ${path}`, 'arch');
+      addLine(ts(), L().op_arch, `${id} → ${path}`, 'arch');
 
       const progEl   = addProgressLine();
       const duration = ri(2800, 6500);
@@ -263,7 +305,7 @@ function cycle() {
         if (outcome === 'lost' && pct >= failAt) {
           clearInterval(timer);
           updateProgress(progEl, pct, true);
-          addLine(ts(), 'LOST', `${id} — ${pick(['entropy threshold exceeded', 'slipped away', 'faded away'])}`, 'lost');
+          addLine(ts(), L().op_lost, L().lost(id, pick(L().lost_msgs)), 'lost');
           nLost++;
           entropy = Math.min(0.99, entropy + rand(0.004, 0.010));
           cycleCount++;
@@ -277,11 +319,11 @@ function cycle() {
           updateProgress(progEl, 100, false);
           if (outcome === 'partial') {
             const part = Math.floor(size * rand(0.30, 0.72));
-            addLine(ts(), 'PARTIAL', `${id} — ${fmtSize(part)} of ${fmtSize(size)} recovered`, 'part');
+            addLine(ts(), L().op_part, L().part(id, fmtSize(part), fmtSize(size)), 'part');
             nPartial++;
             entropy = Math.min(0.99, entropy + rand(0.001, 0.003));
           } else {
-            addLine(ts(), 'SAVED', `${id} — ${fmtSize(size)} written to corpus`, 'save');
+            addLine(ts(), L().op_saved, L().saved(id, fmtSize(size)), 'save');
             nSaved++;
             entropy = Math.max(0.01, entropy - rand(0.001, 0.005));
           }
@@ -301,9 +343,8 @@ function cycle() {
 setTimeout(cycle, 400);
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'm' || e.key === 'M') {
-    document.documentElement.classList.toggle('dark');
-  }
+  if (e.key === 'm' || e.key === 'M') document.documentElement.classList.toggle('dark');
+  if (e.key === 'l' || e.key === 'L') lang = lang === 'en' ? 'hu' : 'en';
 });
 </script>
 </body>

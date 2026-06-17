@@ -58,7 +58,7 @@ const POOL = [
   { type: 'personal_memory', source: 'visual',    text: '"a yellow frisbee thrown over the fence"' },
 
   // ── Internet artifacts — posts & text ───────────────────────────────────────
-  { type: 'internet_artifact', source: 'twitter/x',         text: () => `"tweet deleted: ${_d(2007,2023)} ${_t()} UTC"` },
+  { type: 'internet_artifact', source: 'twitter/x',         text: () => `"tweet deleted: ${_d(2007,2023)} ${_t()} CET"` },
   { type: 'internet_artifact', source: 'twitter/x',         text: '"@[account suspended] — 2,341 tweets deleted"' },
   { type: 'internet_artifact', source: 'twitter/x',         text: '"retweet of suspended account — [ghost retweet]"' },
   { type: 'internet_artifact', source: 'twitter/x',         text: '"quote-tweet of a deleted tweet — context lost"' },
