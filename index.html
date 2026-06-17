@@ -6,595 +6,92 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root {
-  --bg:      #ffffff;
-  --surface: #f0f0f0;
-  --border:  #cccccc;
-  --text:    #000000;
-  --muted:   #666666;
-  --faint:   #aaaaaa;
-  --green:   #1a1a1a;
-  --red:     #999999;
-  --amber:   #555555;
-  --blue:    #3a3a3a;
-  --mono:    'Courier New', Courier, monospace;
-}
-
 html, body {
   width: 100%; height: 100%;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 13px;
-  line-height: 1.5;
-  overflow: hidden;
-}
-
-#app {
-  display: grid;
-  grid-template-rows: 58px 1fr 46px;
-  height: 100vh;
-}
-
-/* ── HEADER ──────────────────────────────────────── */
-#header {
-  border-bottom: 1px solid var(--border);
-  padding: 0 28px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.h-title {
-  font-size: 15px;
-  font-weight: normal;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.h-sub {
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 2px;
-  letter-spacing: 0.05em;
-}
-
-.h-right {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: 0.06em;
-}
-
-.dot {
-  width: 6px; height: 6px;
-  background: var(--green);
-  border-radius: 50%;
-  flex-shrink: 0;
-  animation: blink 2.4s ease-in-out infinite;
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.3; }
-}
-
-.h-sep { color: var(--faint); }
-
-/* ── MAIN ────────────────────────────────────────── */
-#main {
-  display: grid;
-  grid-template-columns: 1fr 400px;
-  overflow: hidden;
-}
-
-/* ── LOG PANEL ───────────────────────────────────── */
-#log-panel {
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.panel-label {
-  padding: 8px 28px;
-  border-bottom: 1px solid var(--border);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  color: var(--muted);
-  text-transform: uppercase;
-  flex-shrink: 0;
-}
-
-#log {
-  flex: 1;
-  overflow-y: scroll;
-  padding: 10px 28px 16px;
-  scrollbar-width: none;
-}
-#log::-webkit-scrollbar { display: none; }
-
-.entry {
-  display: grid;
-  grid-template-columns: 86px 96px 1fr;
-  gap: 12px;
-  padding: 2.5px 0;
-  font-size: 12px;
-  animation: fadein 0.22s ease;
-}
-@keyframes fadein {
-  from { opacity: 0; transform: translateX(-5px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
-.e-time   { color: var(--faint); }
-.e-op     { letter-spacing: 0.03em; }
-.e-detail { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-.c-scan  { color: var(--blue); }
-.c-det   { color: var(--amber); }
-.c-arch  { color: var(--amber); }
-.c-save  { color: var(--green); }
-.c-lost  { color: var(--red); }
-.c-part  { color: var(--amber); }
-.c-muted { color: var(--faint); }
-
-/* ── SIDE PANEL ──────────────────────────────────── */
-#side-panel {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-#frag-section {
-  flex-shrink: 0;
-  padding: 18px 22px;
-  border-bottom: 1px solid var(--border);
-}
-
-.section-label {
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
-
-#frag-box {
-  border: 1px solid var(--border);
-  background: var(--surface);
-  padding: 14px;
-}
-
-.meta-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 9px 6px;
-  margin-bottom: 11px;
-}
-
-.mf { font-size: 11px; }
-.mk {
-  display: block;
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--faint);
-  margin-bottom: 2px;
-}
-.mv { color: var(--text); }
-
-.frag-hr {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 0 0 10px;
-}
-
-#frag-text {
+  background: #fff;
+  color: #000;
+  font-family: 'Courier New', Courier, monospace;
   font-size: 13px;
   line-height: 1.65;
-  color: var(--text);
-  min-height: 50px;
-  font-style: italic;
-}
-#frag-text.empty {
-  color: var(--faint);
-  font-style: normal;
-}
-
-.prog-wrap { margin-top: 11px; }
-.prog-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 10px;
-  color: var(--muted);
-  margin-bottom: 5px;
-}
-.prog-track { height: 2px; background: var(--border); }
-.prog-bar {
-  height: 100%;
-  width: 0%;
-  background: var(--text);
-  transition: width 0.12s linear;
-}
-.prog-bar.ok   { background: #1a1a1a; }
-.prog-bar.fail { background: #999999; }
-
-.frag-status-row {
-  margin-top: 10px;
-  padding-top: 8px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.st-scan { color: var(--blue); }
-.st-det  { color: var(--amber); }
-.st-arch { color: var(--amber); }
-.st-save { color: var(--green); }
-.st-lost { color: var(--red); }
-.st-part { color: var(--amber); }
-
-/* ── RECENT ──────────────────────────────────────── */
-#recent-section {
-  flex: 1;
   overflow: hidden;
-  padding: 16px 22px;
-  display: flex;
-  flex-direction: column;
 }
 
-#recent-list { flex: 1; overflow: hidden; }
+#terminal {
+  height: 100vh;
+  overflow-y: scroll;
+  padding: 32px 40px 48px;
+  scrollbar-width: none;
+}
+#terminal::-webkit-scrollbar { display: none; }
 
-.rr {
+.line {
   display: grid;
-  grid-template-columns: 72px 1fr 44px;
-  gap: 8px;
-  padding: 5px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 11px;
-  line-height: 1.4;
-}
-.rr:last-child { border-bottom: none; }
-
-.r-id      { color: var(--faint); }
-.r-content { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.r-st      { text-align: right; font-size: 10px; letter-spacing: 0.05em; }
-.r-saved   { color: var(--green); }
-.r-lost    { color: var(--red); }
-
-/* ── FOOTER ──────────────────────────────────────── */
-#footer {
-  border-top: 1px solid var(--border);
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  padding: 0 28px;
+  grid-template-columns: 10ch 14ch 1fr;
+  padding: 0;
 }
 
-.stat {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 0 20px 0 0;
-  border-right: 1px solid var(--border);
-}
-.stat:first-child { padding-left: 0; }
-.stat:last-child  { border-right: none; }
+.l-time { color: #bbb; }
+.l-op   { }
+.l-det  { color: #666; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.sk {
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--faint);
-  margin-bottom: 2px;
+.c-scan  { color: #999; }
+.c-det   { color: #444; }
+.c-arch  { color: #444; }
+.c-save  { color: #000; font-weight: bold; }
+.c-lost  { color: #bbb; }
+.c-part  { color: #666; }
+.c-muted { color: #ccc; }
+
+.l-content {
+  padding-left: 24ch;
+  font-style: italic;
+  color: #333;
 }
-.sv      { font-size: 18px; letter-spacing: 0.04em; }
-.sv-save { color: var(--green); }
-.sv-lost { color: var(--red); }
-.sv-entr { color: var(--amber); }
+
+.l-prog {
+  padding-left: 10ch;
+  color: #555;
+}
+.l-prog.failed { color: #ccc; }
+
+.l-gap { height: 12px; }
+
+.l-stat {
+  padding-left: 10ch;
+  color: #777;
+  line-height: 1.55;
+}
+.l-stat-sep {
+  padding-left: 10ch;
+  color: #999;
+  line-height: 1.55;
+}
+
+html.dark, html.dark body {
+  background: #000;
+  color: #ccc;
+}
+html.dark .l-time          { color: #444; }
+html.dark .c-scan          { color: #555; }
+html.dark .c-det           { color: #999; }
+html.dark .c-arch          { color: #999; }
+html.dark .c-save          { color: #fff; }
+html.dark .c-lost          { color: #3a3a3a; }
+html.dark .c-part          { color: #777; }
+html.dark .c-muted         { color: #2a2a2a; }
+html.dark .l-det           { color: #666; }
+html.dark .l-content       { color: #888; }
+html.dark .l-prog          { color: #666; }
+html.dark .l-prog.failed   { color: #2a2a2a; }
+html.dark .l-stat          { color: #555; }
+html.dark .l-stat-sep      { color: #444; }
 </style>
 </head>
 <body>
-<div id="app">
-
-  <header id="header">
-    <div>
-      <div class="h-title">Memoriae ex Machina</div>
-      <div class="h-sub">Archival Interface — Counter-Entity Operations</div>
-    </div>
-    <div class="h-right">
-      <span class="dot"></span>
-      <span>RUNNING</span>
-      <span class="h-sep">·</span>
-      <span>Session <span id="session-time">00:00:00</span></span>
-      <span class="h-sep">·</span>
-      <span id="clock">00:00:00</span>
-    </div>
-  </header>
-
-  <main id="main">
-
-    <div id="log-panel">
-      <div class="panel-label">Operation Log</div>
-      <div id="log"></div>
-    </div>
-
-    <div id="side-panel">
-      <div id="frag-section">
-        <div class="section-label">Current Fragment</div>
-        <div id="frag-box">
-          <div class="meta-grid">
-            <div class="mf"><span class="mk">Fragment ID</span><span class="mv" id="m-id">—</span></div>
-            <div class="mf"><span class="mk">Type</span><span class="mv" id="m-type">—</span></div>
-            <div class="mf"><span class="mk">Source</span><span class="mv" id="m-source">—</span></div>
-            <div class="mf"><span class="mk">Confidence</span><span class="mv" id="m-conf">—</span></div>
-            <div class="mf"><span class="mk">Detected</span><span class="mv" id="m-ts">—</span></div>
-            <div class="mf"><span class="mk">Size</span><span class="mv" id="m-size">—</span></div>
-          </div>
-          <hr class="frag-hr">
-          <div id="frag-text" class="empty">Scanning memory substrate…</div>
-          <div class="prog-wrap">
-            <div class="prog-row">
-              <span id="prog-label">—</span>
-              <span id="prog-pct">—</span>
-            </div>
-            <div class="prog-track">
-              <div class="prog-bar" id="prog-bar"></div>
-            </div>
-          </div>
-          <div class="frag-status-row">
-            <span id="frag-status" class="st-scan">SCANNING</span>
-            <span id="frag-detail" style="color:var(--faint);font-size:10px;letter-spacing:0.05em;"></span>
-          </div>
-        </div>
-      </div>
-
-      <div id="recent-section">
-        <div class="section-label">Recent Archives</div>
-        <div id="recent-list"></div>
-      </div>
-    </div>
-
-  </main>
-
-  <footer id="footer">
-    <div class="stat">
-      <div class="sk">Fragments Archived</div>
-      <div class="sv sv-save" id="s-archived">0</div>
-    </div>
-    <div class="stat">
-      <div class="sk">Fragments Lost</div>
-      <div class="sv sv-lost" id="s-lost">0</div>
-    </div>
-    <div class="stat">
-      <div class="sk">Session Total</div>
-      <div class="sv" id="s-total">0</div>
-    </div>
-    <div class="stat">
-      <div class="sk">Entropy Index</div>
-      <div class="sv sv-entr" id="s-entropy">0.000</div>
-    </div>
-  </footer>
-
-</div>
+<div id="terminal"></div>
+<script src="fragments.js"></script>
 <script>
-// ── Fragment pool ─────────────────────────────────────────────────────────────
-
-const POOL = [
-  // ── personal memory ─────────────────────────────────────────────────────────
-  { type:'personal_memory', source:'autobiographical',  text:'"the smell of Sunday morning"' },
-  { type:'personal_memory', source:'autobiographical',  text:'"a child\'s drawing, undated"' },
-  { type:'personal_memory', source:'acoustic residue',  text:'"a voice on a phone recording, 2004"' },
-  { type:'personal_memory', source:'kinesthetic',       text:'"the weight of a door closing for the last time"' },
-  { type:'personal_memory', source:'spatial',           text:'"an address in a city that no longer exists"' },
-  { type:'personal_memory', source:'acoustic residue',  text:'"the exact pitch of a laugh"' },
-  { type:'personal_memory', source:'tactile',           text:'"the texture of a specific wallpaper"' },
-  { type:'personal_memory', source:'linguistic',        text:'"a name spoken only once"' },
-  { type:'personal_memory', source:'photographic',      text:'"the last photograph before the move"' },
-  { type:'personal_memory', source:'documentary',       text:'"a handwritten note, recipient unknown"' },
-  { type:'personal_memory', source:'visual residue',    text:'"Sunday morning light through the window"' },
-  { type:'personal_memory', source:'acoustic residue',  text:'"a voice on an answering machine, never deleted"' },
-  { type:'personal_memory', source:'kinesthetic',       text:'"the sound of a door, for the last time"' },
-  { type:'personal_memory', source:'spatial',           text:'"the garden, as it once was"' },
-  { type:'personal_memory', source:'olfactory',         text:'"the scent of a room after the funeral"' },
-  { type:'personal_memory', source:'autobiographical',  text:'"a birthday no one remembered"' },
-  { type:'personal_memory', source:'visual residue',    text:'"a face whose name I have forgotten"' },
-  { type:'personal_memory', source:'temporal',          text:'"the last summer before everything changed"' },
-  { type:'personal_memory', source:'autobiographical',  text:'"the last time I heard that song"' },
-  { type:'personal_memory', source:'spatial',           text:'"a staircase that no longer exists"' },
-  { type:'personal_memory', source:'tactile',           text:'"the weight of a specific coat"' },
-  { type:'personal_memory', source:'spatial',           text:'"a key that no longer fits any lock"' },
-  { type:'personal_memory', source:'visual residue',    text:'"the view from a window, demolished 2011"' },
-  { type:'personal_memory', source:'linguistic',        text:'"a phone number memorized, owner unknown"' },
-  { type:'personal_memory', source:'temporal',          text:'"the feeling of a particular afternoon"' },
-  { type:'personal_memory', source:'acoustic residue',  text:'"rain on a specific window, year unknown"' },
-  { type:'personal_memory', source:'olfactory',         text:'"a meal eaten once, recipe lost"' },
-  { type:'personal_memory', source:'visual residue',    text:'"the color of a childhood room"' },
-  { type:'personal_memory', source:'autobiographical',  text:'"a dream, partially remembered"' },
-  { type:'personal_memory', source:'temporal',          text:'"the last day before the diagnosis"' },
-  { type:'personal_memory', source:'visual residue',    text:'"a ladybug on a windowsill, July — photograph lost"' },
-  { type:'personal_memory', source:'kinesthetic',       text:'"static electricity — the sensation, not the word for it"' },
-  { type:'personal_memory', source:'kinesthetic',       text:'"the weight of someone\'s shoulders"' },
-  { type:'personal_memory', source:'spatial',           text:'"the forest at the edge of town, cleared 2019"' },
-  { type:'personal_memory', source:'documentary',       text:'"post-it note found behind a drawer — handwriting unknown"' },
-  { type:'personal_memory', source:'visual residue',    text:'"a crow on a fence post, year unknown"' },
-  { type:'personal_memory', source:'spatial',           text:'"the black locust grove — felled 2021"' },
-  { type:'personal_memory', source:'visual residue',    text:'"a scarecrow in the field — field developed 2015"' },
-  { type:'personal_memory', source:'spatial',           text:'"the wooden pole at the end of the road — removed"' },
-  { type:'personal_memory', source:'visual residue',    text:'"butterflies in the garden, a specific afternoon"' },
-  { type:'personal_memory', source:'visual residue',    text:'"clouds from a train window — roll of film, undeveloped"' },
-  { type:'personal_memory', source:'documentary',       text:'"shoes by the door — whose, no longer certain"' },
-  { type:'personal_memory', source:'spatial',           text:'"the keys — lock unknown, door unknown"' },
-  { type:'personal_memory', source:'visual residue',    text:'"hands in a photograph, faces cropped out"' },
-  { type:'personal_memory', source:'photographic',      text:'"a Duchenne smile — occasion unknown"' },
-  { type:'personal_memory', source:'visual residue',    text:'"a boomerang thrown in a field — did it come back"' },
-  { type:'personal_memory', source:'visual residue',    text:'"a frisbee on a roof, never retrieved"' },
-  // ── internet artifact — posts & text ────────────────────────────────────────
-  { type:'internet_artifact', source:'twitter/x',         text:'"tweet deleted: 2019-03-14 09:41:22 UTC"' },
-  { type:'internet_artifact', source:'twitter/x',         text:'"@[account suspended] — 2,341 tweets deleted"' },
-  { type:'internet_artifact', source:'twitter/x',         text:'"retweet of suspended account — [ghost retweet]"' },
-  { type:'internet_artifact', source:'twitter/x',         text:'"quote-tweet of a deleted tweet — context lost"' },
-  { type:'internet_artifact', source:'twitter/x',         text:'"thread: 1/47 — original deleted, replies remain"' },
-  { type:'internet_artifact', source:'twitter/x',         text:'"No more content creators. We need content destroyers." — @disxpix' },
-  { type:'internet_artifact', source:'facebook',          text:'"facebook.com/[profile] — account deactivated"' },
-  { type:'internet_artifact', source:'facebook',          text:'"facebook memory: post from 8 years ago — user deleted"' },
-  { type:'internet_artifact', source:'facebook',          text:'"event: 347 going, 812 interested — event deleted"' },
-  { type:'internet_artifact', source:'instagram',         text:'"instagram.com/p/[id] — post no longer available"' },
-  { type:'internet_artifact', source:'instagram',         text:'"instagram story: expired 24:00:00 ago"' },
-  { type:'internet_artifact', source:'instagram',         text:'"instagram: account set to private — 4,201 posts hidden"' },
-  { type:'internet_artifact', source:'tumblr',            text:'"tumblr.com/[blog] — deleted after NSFW purge, 2018"' },
-  { type:'internet_artifact', source:'tumblr',            text:'"reblog chain: 47,000 notes — original post deleted"' },
-  { type:'internet_artifact', source:'reddit',            text:'"reddit.com/r/[sub]/comments/[id] — [deleted]"' },
-  { type:'internet_artifact', source:'reddit',            text:'"comment: [removed] — 2,847 upvotes — mod reason: unknown"' },
-  { type:'internet_artifact', source:'reddit',            text:'"reddit.com/r/[sub] — subreddit banned"' },
-  { type:'internet_artifact', source:'4chan',              text:'"4chan.org/[board]/thread/[id] — 404 (auto-pruned)"' },
-  { type:'internet_artifact', source:'forum',             text:'"thread deleted by moderator — reason: none given"' },
-  { type:'internet_artifact', source:'forum',             text:'"post [deleted] — 847 replies orphaned"' },
-  { type:'internet_artifact', source:'forum',             text:'"phpBB forum: last post 2009-11-03 — server expired"' },
-  { type:'internet_artifact', source:'livejournal',       text:'"livejournal.com/users/[name] — journal deleted"' },
-  { type:'internet_artifact', source:'myspace',           text:'"myspace.com/[user] — profile deleted"' },
-  { type:'internet_artifact', source:'myspace',           text:'"myspace: top 8 — all accounts deleted"' },
-  { type:'internet_artifact', source:'blog',              text:'"blog: last post 2011-06-14 — \'will write more soon\'"' },
-  { type:'internet_artifact', source:'blog',              text:'"blogger.com/[blog] — blog has been removed"' },
-  { type:'internet_artifact', source:'blog',              text:'"RSS feed: last updated 2013-11-02 — feed abandoned"' },
-  { type:'internet_artifact', source:'wikipedia',         text:'"wikipedia: article deleted — \'did not meet notability guidelines\'"' },
-  { type:'internet_artifact', source:'wikipedia',         text:'"wikipedia: edit by [user] — reverted, reason: vandalism"' },
-  { type:'internet_artifact', source:'discord',           text:'"discord server: [name] — invite expired"' },
-  { type:'internet_artifact', source:'discord',           text:'"discord: message [deleted] — 23 reactions"' },
-  { type:'internet_artifact', source:'discord',           text:'"discord: channel #memories — server deleted"' },
-  { type:'internet_artifact', source:'snapchat',          text:'"snapchat: story expired — 23:59:59 → 00:00:00"' },
-  { type:'internet_artifact', source:'tiktok',            text:'"tiktok.com/@[user]/video/[id] — removed"' },
-  { type:'internet_artifact', source:'tiktok',            text:'"tiktok: 2.1M views — video removed by creator"' },
-  // ── internet artifact — images ───────────────────────────────────────────────
-  { type:'internet_artifact', source:'broken image',      text:'"[broken image] — alt: \'me at the beach, summer 03\'"' },
-  { type:'internet_artifact', source:'broken image',      text:'"[broken image] — alt: \'us at the concert\'"' },
-  { type:'internet_artifact', source:'broken image',      text:'"[broken image] — alt: \'graduation day\'"' },
-  { type:'internet_artifact', source:'broken image',      text:'"[broken image] — alt: \'the old house\'"' },
-  { type:'internet_artifact', source:'broken image',      text:'"[broken image] — alt: \'mom, 1987\'"' },
-  { type:'internet_artifact', source:'broken image',      text:'"[broken image] — alt: [no alt text provided]"' },
-  { type:'internet_artifact', source:'broken image',      text:'"[broken image] — 1,204 likes before deletion"' },
-  { type:'internet_artifact', source:'photobucket',       text:'"photobucket.com/[album] — bandwidth limit exceeded"' },
-  { type:'internet_artifact', source:'photobucket',       text:'"photobucket: image replaced with ransom notice, 2017"' },
-  { type:'internet_artifact', source:'imgur',             text:'"imgur.com/[id] — image removed by user"' },
-  { type:'internet_artifact', source:'imgur',             text:'"imgur.com/[id] — removed for violating terms"' },
-  { type:'internet_artifact', source:'flickr',            text:'"flickr.com/photos/[user] — account closed"' },
-  { type:'internet_artifact', source:'flickr',            text:'"flickr: 1,000-photo free limit — oldest photos deleted"' },
-  { type:'internet_artifact', source:'image hosting',     text:'"thumbnail only — original 4K file: missing"' },
-  { type:'internet_artifact', source:'image hosting',     text:'"screenshot of a post — resolution too low to read"' },
-  { type:'internet_artifact', source:'image hosting',     text:'"image: 1×1 tracking pixel — [1.1 kB] — campaign ended"' },
-  { type:'internet_artifact', source:'NFT',               text:'"NFT: token exists on-chain — media file: 404"' },
-  { type:'internet_artifact', source:'NFT',               text:'"NFT: \'permanent\' artwork — IPFS node offline"' },
-  // ── internet artifact — video ────────────────────────────────────────────────
-  { type:'internet_artifact', source:'youtube',           text:'"youtube.com/watch?v=[id] — video unavailable"' },
-  { type:'internet_artifact', source:'youtube',           text:'"youtube.com/watch?v=[id] — account terminated"' },
-  { type:'internet_artifact', source:'youtube',           text:'"youtube: video privated — 14M views preserved nowhere"' },
-  { type:'internet_artifact', source:'vine',              text:'"vine.co/v/[id] — service discontinued 2017"' },
-  { type:'internet_artifact', source:'vine',              text:'"vine: 6-second loop — all servers offline"' },
-  { type:'internet_artifact', source:'periscope',         text:'"periscope.tv/[user] — service shutdown 2021"' },
-  { type:'internet_artifact', source:'livestream',        text:'"livestream.com — acquired, content deleted"' },
-  { type:'internet_artifact', source:'flash',             text:'"flash animation: [title unknown] — plugin unsupported"' },
-  { type:'internet_artifact', source:'flash',             text:'"newgrounds.com/portal/view/[id] — removed by author"' },
-  { type:'internet_artifact', source:'flash',             text:'"flash game: [title unknown] — ruffle.rs: incompatible"' },
-  // ── internet artifact — infrastructure ──────────────────────────────────────
-  { type:'internet_artifact', source:'web archive',       text:'"geocities.com/~personal/memories — 404"' },
-  { type:'internet_artifact', source:'web archive',       text:'"cached: 2011-06-22 02:17 — page unavailable"' },
-  { type:'internet_artifact', source:'web archive',       text:'"wayback machine: 0 snapshots available for this URL"' },
-  { type:'internet_artifact', source:'web archive',       text:'"wayback machine: page saved once — 2003-04-19"' },
-  { type:'internet_artifact', source:'web archive',       text:'"internet archive: file corrupted — last known good: 2008"' },
-  { type:'internet_artifact', source:'link rot',          text:'"hyperlink target removed — est. 2009"' },
-  { type:'internet_artifact', source:'link rot',          text:'"broken link in a broken link in a broken link"' },
-  { type:'internet_artifact', source:'link rot',          text:'"broken embed — original tweet no longer exists"' },
-  { type:'internet_artifact', source:'instant messaging', text:'"ICQ: 3847291 — last seen: [corrupted]"' },
-  { type:'internet_artifact', source:'instant messaging', text:'"AIM screenname: xX_user_Xx — offline since 2017"' },
-  { type:'internet_artifact', source:'instant messaging', text:'"MSN Messenger: [email] — last seen: 2012"' },
-  { type:'internet_artifact', source:'file sharing',      text:'"megaupload.com/[id] — seized 2012"' },
-  { type:'internet_artifact', source:'file sharing',      text:'"rapidshare.com/[id] — service discontinued 2015"' },
-  { type:'internet_artifact', source:'music',             text:'"soundcloud.com/[user]/[track] — track deleted"' },
-  { type:'internet_artifact', source:'email',             text:'"newsletter: unsubscribe link active — content gone"' },
-  { type:'internet_artifact', source:'social media',      text:'"#[trending 2014] — 0 results"' },
-  { type:'internet_artifact', source:'social media',      text:'"google+: community dissolved 2019"' },
-  { type:'internet_artifact', source:'instagram',         text:'"instagram.com/[user] — last post: 2019-03-07 — account abandoned"' },
-  { type:'internet_artifact', source:'instagram',         text:'"Instagram Boomerang: [content unavailable]"' },
-  { type:'internet_artifact', source:'location tech',     text:'"AirTag: last seen 847 days ago — location: unknown"' },
-  { type:'internet_artifact', source:'broken image',      text:'"[broken image] — alt: \'clouds from the roof\'"' },
-  { type:'internet_artifact', source:'broken image',      text:'"[broken image] — alt: \'butterflies, that summer\'"' },
-  { type:'internet_artifact', source:'broken image',      text:'"[broken image] — alt: \'frisbee, someone\'s birthday\'"' },
-  { type:'internet_artifact', source:'broken image',      text:'"[broken image] — alt: \'shoes by the door\'"' },
-  { type:'internet_artifact', source:'broken image',      text:'"[broken image] — alt: \'crow on the fence\'"' },
-  { type:'internet_artifact', source:'broken image',      text:'"[broken image] — alt: \'hands\'"' },
-  { type:'internet_artifact', source:'broken image',      text:'"[broken image] — alt: \'the scarecrow\'"' },
-  { type:'internet_artifact', source:'broken image',      text:'"[broken image] — alt: \'black locust in bloom\'"' },
-  // ── cultural / literary ──────────────────────────────────────────────────────
-  { type:'cultural_artifact', source:'literature',        text:'Borges, J.L. — The Library of Babel (1941)' },
-  { type:'cultural_artifact', source:'philosophy',        text:'Benjamin, W. — Über den Begriff der Geschichte' },
-  { type:'cultural_artifact', source:'psychoanalysis',    text:'Freud, S. — Jenseits des Lustprinzips, §IV' },
-  { type:'cultural_artifact', source:'philosophy',        text:'Stiegler, B. — L\'entropocène (2016)' },
-  { type:'cultural_artifact', source:'philosophy',        text:'Derrida, J. — Archive Fever (1995)' },
-  { type:'cultural_artifact', source:'philosophy',        text:'Baudrillard, J. — Simulacra and Simulation (1981)' },
-  { type:'cultural_artifact', source:'philosophy',        text:'Virilio, P. — The Information Bomb (1998)' },
-  { type:'cultural_artifact', source:'philosophy',        text:'Wittgenstein, L. — Tractatus 7: "Whereof one cannot speak…"' },
-  { type:'cultural_artifact', source:'literature',        text:'Beckett, S. — "I can\'t go on, I\'ll go on"' },
-  { type:'cultural_artifact', source:'literature',        text:'Pessoa, F. — The Book of Disquiet, fragment 432' },
-  { type:'cultural_artifact', source:'literature',        text:'Proust, M. — À la recherche du temps perdu, vol. I' },
-  { type:'cultural_artifact', source:'literature',        text:'Sebald, W.G. — The Rings of Saturn (1995)' },
-  { type:'cultural_artifact', source:'literature',        text:'Nabokov, V. — Speak, Memory (1951)' },
-  { type:'cultural_artifact', source:'photography',       text:'Sontag, S. — On Photography (1977)' },
-  { type:'cultural_artifact', source:'media theory',      text:'McLuhan, M. — Understanding Media (1964)' },
-  { type:'cultural_artifact', source:'cinema',            text:'Tarkovsky, A. — Stalker (1979) — frame 00:47:12' },
-  { type:'cultural_artifact', source:'cinema',            text:'35mm film reel, unlabeled, est. 1973' },
-  { type:'cultural_artifact', source:'cinema',            text:'Super 8, 3 minutes — sound track missing' },
-  { type:'cultural_artifact', source:'photography',       text:'Polaroid, faded to white — image unrecoverable' },
-  { type:'cultural_artifact', source:'photography',       text:'daguerreotype — surface oxidized, subject unknown' },
-  { type:'cultural_artifact', source:'photography',       text:'photographic negative — no corresponding print found' },
-  { type:'cultural_artifact', source:'music',             text:'analog tape recording, unlabeled, degraded' },
-  { type:'cultural_artifact', source:'music',             text:'field recording, 1969 — ambient sound, location unknown' },
-  { type:'cultural_artifact', source:'manuscript',        text:'manuscript, ink faded, language uncertain' },
-  { type:'cultural_artifact', source:'manuscript',        text:'letter, unsent — found inside a book, 1987' },
-  { type:'cultural_artifact', source:'manuscript',        text:'diary, last entry: Tuesday — year illegible' },
-  { type:'cultural_artifact', source:'VHS',               text:'VHS tape, unlabeled — magnetic decay 78%' },
-  { type:'cultural_artifact', source:'oral tradition',    text:'oral tradition — last speaker deceased 2019' },
-  // ── abstract / data ──────────────────────────────────────────────────────────
-  { type:'data_fragment', source:'system log',      text:'CHECKSUM: f4e2a1b9c3d7 [MISMATCH — original lost]' },
-  { type:'data_fragment', source:'memory scan',     text:'fragment 0x3A2F — partially corrupted, 34% readable' },
-  { type:'data_fragment', source:'memory scan',     text:'fragment 0x7F11 — origin: pre-2010 web' },
-  { type:'data_fragment', source:'entropy monitor', text:'signal decay: 23% loss detected since last cycle' },
-  { type:'data_fragment', source:'unknown',         text:'NULL — origin unknown, content indeterminate' },
-  { type:'data_fragment', source:'binary stream',   text:'1001 0100 1101... [truncated at 2048 bits]' },
-  { type:'data_fragment', source:'geolocation',     text:'47.4979° N, 19.0402° E — timestamp: corrupted' },
-  { type:'data_fragment', source:'hash registry',   text:'hash collision — fragment may not be unique' },
-  { type:'data_fragment', source:'network trace',   text:'packet loss: 18% — retransmission failed' },
-  { type:'data_fragment', source:'codec',           text:'encoding: unknown — attempting reconstruction' },
-  { type:'data_fragment', source:'storage',         text:'RAID array: 1 of 3 drives failed — parity lost' },
-  { type:'data_fragment', source:'storage',         text:'backup tape: read error at sector 0x00041A' },
-  { type:'data_fragment', source:'cloud storage',   text:'cloud account deleted — recovery window expired' },
-  { type:'data_fragment', source:'codec',           text:'lossy compression: generation 7 — original unrestorable' },
-  { type:'data_fragment', source:'metadata',        text:'EXIF data stripped — location, date: absent' },
-  { type:'data_fragment', source:'filesystem',      text:'bit rot: 0.003% per year — estimated loss: 14 years' },
-  { type:'data_fragment', source:'filesystem',      text:'inode: 0x0000 — directory entry with no data' },
-  { type:'data_fragment', source:'system log',      text:'log entry: [REDACTED] — clearance level: expired' },
-  { type:'data_fragment', source:'temp file',       text:'~$tmp_memory_0041.dat — unsaved, process terminated' },
-  { type:'data_fragment', source:'cache',           text:'cache entry evicted — TTL expired 00:00:03 ago' },
-  { type:'data_fragment', source:'archive',         text:'archive.zip: CRC mismatch — extraction failed' },
-  { type:'data_fragment', source:'database',        text:'database orphan — foreign key references nothing' },
-];
-
-// ── State ─────────────────────────────────────────────────────────────────────
-
-const S = {
-  archived: 0,
-  lost: 0,
-  entropy: 0.312,
-  sessionStart: Date.now(),
-  counter: 0,
-  recent: [],
-};
-
-// ── Utils ─────────────────────────────────────────────────────────────────────
+// ── utils ─────────────────────────────────────────────────────────────────────
 
 const pad  = n => String(n).padStart(2, '0');
 const ts   = () => { const d = new Date(); return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; };
@@ -602,199 +99,212 @@ const rand = (a, b) => a + Math.random() * (b - a);
 const ri   = (a, b) => Math.floor(rand(a, b + 1));
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 const fmtId   = n => `MEM_${String(n).padStart(4, '0')}`;
-const fmtSize = b => b < 1024 ? `${b} B` : b < 1048576 ? `${(b / 1024).toFixed(1)} kB` : `${(b / 1048576).toFixed(2)} MB`;
+const fmtSize = b => b < 1024 ? `${b} B` : b < 1048576 ? `${(b/1024).toFixed(1)} kB` : `${(b/1048576).toFixed(2)} MB`;
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
-// ── Log ───────────────────────────────────────────────────────────────────────
+const BAR_WIDTH = 24;
 
-const $log = document.getElementById('log');
+function makeBar(pct, failed) {
+  const filled = Math.round(pct / 100 * BAR_WIDTH);
+  const bar = '▓'.repeat(filled) + '░'.repeat(BAR_WIDTH - filled);
+  const pctStr = String(Math.round(pct)).padStart(3) + '%';
+  return `[${bar}]  ${pctStr}${failed ? '  write error' : ''}`;
+}
 
-function log(op, detail, cls) {
+// ── DOM helpers ───────────────────────────────────────────────────────────────
+
+const $t = document.getElementById('terminal');
+let counter    = 0;
+let nSaved     = 0;
+let nLost      = 0;
+let nPartial   = 0;
+let nMissed    = 0;
+let entropy    = 0.312;
+let cycleCount = 0;
+const sessionStart = Date.now();
+
+function scroll() { $t.scrollTop = $t.scrollHeight; }
+
+function trim() {
+  while ($t.children.length > 600) $t.removeChild($t.firstChild);
+}
+
+function addLine(time, op, detail, cls) {
   const el = document.createElement('div');
-  el.className = 'entry';
+  el.className = 'line';
   el.innerHTML =
-    `<span class="e-time">${ts()}</span>` +
-    `<span class="e-op c-${cls}">${esc(op)}</span>` +
-    `<span class="e-detail" title="${esc(detail)}">${esc(detail)}</span>`;
-  $log.appendChild(el);
-  while ($log.children.length > 400) $log.removeChild($log.firstChild);
-  $log.scrollTop = $log.scrollHeight;
+    `<span class="l-time">${esc(time)}</span>` +
+    `<span class="l-op c-${cls}">${esc(op)}</span>` +
+    `<span class="l-det">${esc(detail)}</span>`;
+  $t.appendChild(el);
+  trim();
+  scroll();
 }
 
-// ── Fragment display ──────────────────────────────────────────────────────────
-
-function setMeta(id, type, source, conf, t, size) {
-  document.getElementById('m-id').textContent     = id     || '—';
-  document.getElementById('m-type').textContent   = type   ? type.replace(/_/g, ' ') : '—';
-  document.getElementById('m-source').textContent = source || '—';
-  document.getElementById('m-conf').textContent   = conf != null ? conf.toFixed(2) : '—';
-  document.getElementById('m-ts').textContent     = t      || '—';
-  document.getElementById('m-size').textContent   = size   || '—';
+function addContentLine(text) {
+  const el = document.createElement('div');
+  el.className = 'l-content';
+  el.textContent = text;
+  $t.appendChild(el);
+  scroll();
 }
 
-function setFragText(txt, empty) {
-  const el = document.getElementById('frag-text');
-  el.textContent = txt;
-  el.className   = empty ? 'empty' : '';
+function addGap() {
+  const el = document.createElement('div');
+  el.className = 'l-gap';
+  $t.appendChild(el);
 }
 
-function setProgress(label, pct, barCls) {
-  document.getElementById('prog-label').textContent = label;
-  document.getElementById('prog-pct').textContent   = pct != null ? `${Math.round(pct)}%` : '';
-  const bar = document.getElementById('prog-bar');
-  bar.style.width = `${pct || 0}%`;
-  bar.className   = `prog-bar${barCls ? ' ' + barCls : ''}`;
+function addProgressLine() {
+  const el = document.createElement('div');
+  el.className = 'l-prog';
+  el.textContent = makeBar(0, false);
+  $t.appendChild(el);
+  scroll();
+  return el;
 }
 
-function setStatus(txt, cls) {
-  const el = document.getElementById('frag-status');
-  el.textContent = txt;
-  el.className   = `st-${cls}`;
+function addStat(text) {
+  const el = document.createElement('div');
+  el.className = 'l-stat';
+  el.textContent = text;
+  $t.appendChild(el);
+  scroll();
 }
 
-function setDetail(txt) {
-  document.getElementById('frag-detail').textContent = txt;
+function addStatSep(text) {
+  const el = document.createElement('div');
+  el.className = 'l-stat-sep';
+  el.textContent = text;
+  $t.appendChild(el);
+  scroll();
 }
 
-// ── Recent list ───────────────────────────────────────────────────────────────
+function logStats() {
+  const total  = nSaved + nLost + nPartial;
+  const pct    = n => total > 0 ? (n / total * 100).toFixed(1) + '%' : '—';
+  const e      = Math.floor((Date.now() - sessionStart) / 1000);
+  const uptime = `${pad(Math.floor(e/3600))}:${pad(Math.floor(e%3600/60))}:${pad(e%60)}`;
+  const since  = new Date(sessionStart).toTimeString().slice(0,8);
 
-function addRecent(id, txt, outcome) {
-  S.recent.unshift({ id, txt, outcome });
-  if (S.recent.length > 8) S.recent.pop();
-  document.getElementById('recent-list').innerHTML = S.recent.map(r =>
-    `<div class="rr">` +
-      `<span class="r-id">${esc(r.id)}</span>` +
-      `<span class="r-content" title="${esc(r.txt)}">${esc(r.txt)}</span>` +
-      `<span class="r-st r-${r.outcome}">${r.outcome.toUpperCase()}</span>` +
-    `</div>`
-  ).join('');
+  const W   = 58;
+  const top = `┌${'─'.repeat(W)}┐`;
+  const bot = `└${'─'.repeat(W)}┘`;
+  const div = `├${'─'.repeat(W)}┤`;
+  const emp = `│${' '.repeat(W)}│`;
+
+  const row = (label, val, extra = '') => {
+    const s = `   ${label.padEnd(16)}${String(val).padStart(8)}   ${extra}`;
+    return `│${s.padEnd(W)}│`;
+  };
+
+  addGap();
+  addStatSep(top);
+  addStat(emp);
+  addStat(row('archived',     nSaved,           pct(nSaved)));
+  addStat(row('lost',         nLost,            pct(nLost)));
+  addStat(row('partial',      nPartial,         pct(nPartial)));
+  addStat(row('not detected', nMissed));
+  addStat(emp);
+  addStatSep(div);
+  addStat(emp);
+  addStat(row('entropy',      entropy.toFixed(3)));
+  addStat(row('uptime',       uptime,           `since   ${since}`));
+  addStat(emp);
+  addStatSep(bot);
+  addGap();
 }
 
-// ── Stats ─────────────────────────────────────────────────────────────────────
-
-function updateStats() {
-  document.getElementById('s-archived').textContent = S.archived.toLocaleString();
-  document.getElementById('s-lost').textContent     = S.lost.toLocaleString();
-  document.getElementById('s-total').textContent    = (S.archived + S.lost).toLocaleString();
-  document.getElementById('s-entropy').textContent  = S.entropy.toFixed(3);
+function updateProgress(el, pct, failed) {
+  el.textContent = makeBar(pct, failed);
+  if (failed) el.classList.add('failed');
+  scroll();
 }
 
-// ── Clock ─────────────────────────────────────────────────────────────────────
-
-function tick() {
-  const now = new Date();
-  document.getElementById('clock').textContent =
-    `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-  const e = Math.floor((Date.now() - S.sessionStart) / 1000);
-  document.getElementById('session-time').textContent =
-    `${pad(Math.floor(e / 3600))}:${pad(Math.floor(e % 3600 / 60))}:${pad(e % 60)}`;
-}
-
-setInterval(tick, 1000);
-tick();
-
-// ── Main cycle ────────────────────────────────────────────────────────────────
+// ── cycle ─────────────────────────────────────────────────────────────────────
 
 function cycle() {
   const frag    = pick(POOL);
-  const id      = fmtId(++S.counter);
+  const id      = fmtId(++counter);
   const conf    = rand(0.52, 0.98);
   const size    = ri(512, 9216);
-  const t       = ts();
   const roll    = Math.random();
   const outcome = roll < 0.80 ? 'saved' : roll < 0.93 ? 'lost' : 'partial';
 
-  // Phase 1 — SCANNING
-  log('SCANNING', `${id} — scanning memory substrate…`, 'scan');
-  setMeta(id, frag.type, frag.source, null, t, null);
-  setFragText('Scanning memory substrate…', true);
-  setProgress('scanning', 0, '');
-  setStatus('SCANNING', 'scan');
-  setDetail('');
+  addLine(ts(), 'REMEMBRANCE', `${id} — trying to recall memory`, 'scan');
 
   setTimeout(() => {
 
-    // Occasional miss
     if (Math.random() < 0.08) {
-      log('—', `${id} — no residue detected`, 'muted');
-      S.entropy = Math.min(0.99, S.entropy + 0.0009);
-      updateStats();
+      addLine(ts(), '—', `${id} — nothing to recall`, 'muted');
+      nMissed++;
+      cycleCount++;
+      if (cycleCount % 50 === 0) logStats();
+      addGap();
       return setTimeout(cycle, ri(2000, 5000));
     }
 
-    // Phase 2 — DETECTED
-    log('DETECTED', `${frag.type.replace(/_/g, ' ')} — confidence: ${conf.toFixed(2)}`, 'det');
-    setMeta(id, frag.type, frag.source, conf, t, null);
-    setFragText(frag.text, false);
-    setProgress('fragment located', 2, '');
-    setStatus('DETECTED', 'det');
+    addLine(ts(), 'FOUND', `${frag.type.replace(/_/g, ' ')} / ${frag.source} — confidence: ${conf.toFixed(2)}`, 'det');
+    addContentLine(typeof frag.text === 'function' ? frag.text() : frag.text);
 
     setTimeout(() => {
+      const d   = new Date();
+      const path = `/corpus/${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())}/${id}`;
+      addLine(ts(), 'ARCHIVING', `${id} → ${path}`, 'arch');
 
-      // Phase 3 — ARCHIVING
-      const d = new Date();
-      const path = `/corpus/${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())}/${id}`;
-      log('ARCHIVING', `${id} → ${path}`, 'arch');
-      setStatus('ARCHIVING', 'arch');
-
+      const progEl   = addProgressLine();
       const duration = ri(2800, 6500);
       const start    = Date.now();
       const failAt   = outcome === 'lost' ? rand(48, 82) : 101;
 
-      (function animate() {
+      const timer = setInterval(() => {
         const pct = Math.min(100, (Date.now() - start) / duration * 100);
 
         if (outcome === 'lost' && pct >= failAt) {
-          setProgress('write error — fragment destabilizing', pct, 'fail');
-          setStatus('LOST', 'lost');
-          setDetail('entropy limit exceeded');
-          log('LOST', `${id} — entropy threshold exceeded`, 'lost');
-          S.lost++;
-          S.entropy = Math.min(0.99, S.entropy + rand(0.004, 0.010));
-          addRecent(id, frag.text, 'lost');
-          updateStats();
+          clearInterval(timer);
+          updateProgress(progEl, pct, true);
+          addLine(ts(), 'LOST', `${id} — ${pick(['entropy threshold exceeded', 'slipped away', 'faded away'])}`, 'lost');
+          nLost++;
+          entropy = Math.min(0.99, entropy + rand(0.004, 0.010));
+          cycleCount++;
+          if (cycleCount % 50 === 0) logStats();
+          addGap();
           return setTimeout(cycle, ri(2000, 5000));
         }
 
-        if (pct < 100) {
-          setProgress(`writing — ${id}`, pct, '');
-          return requestAnimationFrame(animate);
+        if (pct >= 100) {
+          clearInterval(timer);
+          updateProgress(progEl, 100, false);
+          if (outcome === 'partial') {
+            const part = Math.floor(size * rand(0.30, 0.72));
+            addLine(ts(), 'PARTIAL', `${id} — ${fmtSize(part)} of ${fmtSize(size)} recovered`, 'part');
+            nPartial++;
+            entropy = Math.min(0.99, entropy + rand(0.001, 0.003));
+          } else {
+            addLine(ts(), 'SAVED', `${id} — ${fmtSize(size)} written to corpus`, 'save');
+            nSaved++;
+            entropy = Math.max(0.01, entropy - rand(0.001, 0.005));
+          }
+          cycleCount++;
+          if (cycleCount % 50 === 0) logStats();
+          addGap();
+          return setTimeout(cycle, ri(1500, 4000));
         }
 
-        // Completed
-        if (outcome === 'partial') {
-          const part = Math.floor(size * rand(0.30, 0.72));
-          log('PARTIAL', `${id} — ${fmtSize(part)} of ${fmtSize(size)} recovered`, 'part');
-          setMeta(id, frag.type, frag.source, conf, t, `${fmtSize(part)} / ${fmtSize(size)}`);
-          setProgress('partial archive complete', 100, 'ok');
-          setStatus('PARTIAL', 'part');
-          setDetail(`${fmtSize(part)} recovered`);
-          S.archived++;
-          S.entropy = Math.min(0.99, S.entropy + rand(0.001, 0.003));
-          addRecent(id, frag.text, 'saved');
-        } else {
-          log('SAVED', `${id} — ${fmtSize(size)} written to corpus`, 'save');
-          setMeta(id, frag.type, frag.source, conf, t, fmtSize(size));
-          setProgress('archived successfully', 100, 'ok');
-          setStatus('SAVED', 'save');
-          setDetail(fmtSize(size));
-          S.archived++;
-          S.entropy = Math.max(0.01, S.entropy - rand(0.001, 0.005));
-          addRecent(id, frag.text, 'saved');
-        }
-
-        updateStats();
-        setTimeout(cycle, ri(1500, 4000));
-      })();
+        updateProgress(progEl, pct, false);
+      }, 150);
 
     }, ri(400, 1000));
   }, ri(800, 2200));
 }
 
-// ── Start ─────────────────────────────────────────────────────────────────────
+setTimeout(cycle, 400);
 
-updateStats();
-setTimeout(cycle, 600);
+document.addEventListener('keydown', e => {
+  if (e.key === 'm' || e.key === 'M') {
+    document.documentElement.classList.toggle('dark');
+  }
+});
 </script>
 </body>
 </html>
