@@ -11,9 +11,10 @@ html, body {
   background: #fff;
   color: #000;
   font-family: 'Courier New', Courier, monospace;
-  font-size: 13px;
+  font-size: 20px;
   line-height: 1.65;
   overflow: hidden;
+  cursor: none;
 }
 
 #terminal {
@@ -229,31 +230,22 @@ function logStats() {
   const uptime = `${pad(Math.floor(e/3600))}:${pad(Math.floor(e%3600/60))}:${pad(e%60)}`;
   const since  = new Date(sessionStart).toTimeString().slice(0,8);
 
-  const W   = 58;
-  const top = `┌${'─'.repeat(W)}┐`;
-  const bot = `└${'─'.repeat(W)}┘`;
-  const div = `├${'─'.repeat(W)}┤`;
-  const emp = `│${' '.repeat(W)}│`;
-
+  const sep = '─'.repeat(52);
   const row = (label, val, extra = '') => {
-    const s = `   ${label.padEnd(16)}${String(val).padStart(8)}   ${extra}`;
-    return `│${s.padEnd(W)}│`;
+    const base = `   ${label.padEnd(16)}${String(val).padStart(8)}`;
+    return extra ? `${base}   ·   ${extra}` : base;
   };
 
   addGap();
-  addStatSep(top);
-  addStat(emp);
-  addStat(row(L().s_arch, nSaved,           pct(nSaved)));
-  addStat(row(L().s_lost, nLost,            pct(nLost)));
-  addStat(row(L().s_part, nPartial,         pct(nPartial)));
+  addStatSep(sep);
+  addStat(row(L().s_arch, nSaved,   pct(nSaved)));
+  addStat(row(L().s_lost, nLost,    pct(nLost)));
+  addStat(row(L().s_part, nPartial, pct(nPartial)));
   addStat(row(L().s_miss, nMissed));
-  addStat(emp);
-  addStatSep(div);
-  addStat(emp);
+  addStatSep(sep);
   addStat(row(L().s_entr, entropy.toFixed(3)));
-  addStat(row(L().s_up,   uptime,           `${L().s_since}   ${since}`));
-  addStat(emp);
-  addStatSep(bot);
+  addStat(row(L().s_up,   uptime,   `${L().s_since}   ${since}`));
+  addStatSep(sep);
   addGap();
 }
 
@@ -287,7 +279,8 @@ function cycle() {
     }
 
     addLine(ts(), L().op_found, L().found(L().types[frag.type], frag.source, conf.toFixed(2)), 'det');
-    addContentLine(typeof frag.text === 'function' ? frag.text() : frag.text);
+    const _t = lang === 'hu' && frag.hu !== undefined ? frag.hu : frag.text;
+    addContentLine(typeof _t === 'function' ? _t() : _t);
 
     setTimeout(() => {
       const d   = new Date();
